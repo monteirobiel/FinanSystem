@@ -18,7 +18,7 @@ const LoginPage = async () => {
         <div className="flex h-full w-[488px] max-w-full flex-col justify-center gap-8">
           <Image
             src="/logo-full.png"
-            alt="Fin Track AI"
+            alt="FinanSystem"
             width={173.57}
             height={39}
           />
@@ -27,10 +27,9 @@ const LoginPage = async () => {
             <h1 className=" text-4xl font-bold">Seja bem-vindo</h1>
 
             <p className="text-muted-foreground">
-              A Fintrack AI é uma plataforma de gestão financeira e controle de
-              gastos, impulsionada por inteligência artificial, que monitora
-              suas movimentações e oferece insights personalizados, tornando o
-              controle do seu orçamento mais fácil e eficiente.
+              A FinanSystem é uma plataforma/sistema de controle de finanças
+              onde voce pode fazer o controle de suas finanças de forma simples
+              e prática. Com um design minimalista e simples de utilizar, você
             </p>
           </div>
 
