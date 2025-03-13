@@ -13,31 +13,35 @@ const LoginPage = async () => {
   }
 
   return (
-    <div className=" py-50 h-screen w-screen grid-cols-1 lg:grid-cols-2">
-      <div className="flex items-center justify-center py-[4rem]">
-        <div className="flex h-full w-[488px] max-w-full flex-col justify-center gap-8">
+    <div className="grid h-screen w-screen grid-cols-1 lg:grid-cols-2 bg-black mt-[-64px]">
+      <div className="flex items-center justify-center">
+        /
+        <div className="flex h-full w-[488px] max-w-full flex-col justify-center gap-8 mb-20">
           <Image
-            src="/logo-full.png"
+            src="/login-logo.png"
             alt="FinanSystem"
             width={173.57}
-            height={39}
+            height={30}
           />
 
-          <div className="flex flex-col gap-3">
-            <h1 className=" text-4xl font-bold">Seja bem-vindo</h1>
+          <div className="flex flex-col gap-3 text-white mt-[-50px] pl-3">
+            <h1 className="text-4xl font-bold ">Seja bem-vindo</h1>
 
             <p className="text-muted-foreground">
               A FinanSystem é uma plataforma/sistema de controle de finanças
               onde voce pode fazer o controle de suas finanças de forma simples
-              e prática. Com um design minimalista e simples de utilizar, você
+              e prática. Com um design minimalista e simples de utilizar.
             </p>
           </div>
 
           <div className="w-full">
             <SignInButton>
-              <Button variant="outline" className="w-full">
-                <LogInIcon className="mr-2" />
-                Click to Sign In
+              <Button
+                variant="outline"
+                className="w-110 ml-5 bg-black text-white border-solid border-2 rounded-2xl text-lg"
+              >
+                <LogInIcon className="mr-2 size-5" />
+                Acesse agora!
               </Button>
             </SignInButton>
           </div>
