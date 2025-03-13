@@ -33,9 +33,9 @@ const LandingPage = () => {
         <Button
           variant="default"
           className="bg-green-700 hover:bg-green-900 text-white py-3 px-8 rounded-full h-13 w-62 text-lg"
-          onClick={() => router.push("/planos")}
+          onClick={() => router.push("/login")}
         >
-          Conheça Nossos Planos
+          Acessar agora!
         </Button>
       </section>
 
@@ -130,7 +130,7 @@ const LandingPage = () => {
         <Button
           variant="default"
           className="bg-green-700 hover:bg-green-900 text-white py-3 px-8 rounded-full h-13 w-62 text-lg z-10"
-          onClick={() => router.push("/planos")}
+          onClick={() => router.push("/login")}
         >
           Criar Conta
         </Button>
