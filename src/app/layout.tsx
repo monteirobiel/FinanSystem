@@ -1,6 +1,9 @@
+"use client";
+
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,28 +15,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "FinanSystem",
-  description: "Easily manage your finances with our platform.",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isPublicRoute = ["/", "/home", "/login", "/signup"].includes(pathname);
+
   return (
     <ClerkProvider>
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <SignedOut></SignedOut>
-            <SignedIn>
-              <UserButton afterSignOutUrl="/login" />
-            </SignedIn>
-          </header>
+          {/* Só mostrar o header com o UserButton se NÃO for uma rota pública de login/signup */}
+          {!isPublicRoute ||
+          (isPublicRoute && pathname !== "/login" && pathname !== "/signup") ? (
+            <header className="flex justify-end items-center p-4 gap-4 h-16">
+              <SignedIn>
+                <UserButton afterSignOutUrl="/login" />
+              </SignedIn>
+              <SignedOut>
+                {!isPublicRoute && (
+                  <a
+                    href="/login"
+                    className="px-4 py-2 text-blue-600 hover:underline"
+                  >
+                    Login
+                  </a>
+                )}
+              </SignedOut>
+            </header>
+          ) : null}
+
           {children}
         </body>
       </html>

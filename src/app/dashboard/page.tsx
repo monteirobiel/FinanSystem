@@ -390,7 +390,7 @@ const Dashboard = () => {
               {getPageTitle()}
             </h1>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 pr-10">
             {/* Calendário com Popover */}
             <Popover open={isCalendarOpen} onOpenChange={handleOpenChange}>
               <PopoverTrigger asChild>
@@ -519,9 +519,6 @@ const Dashboard = () => {
                 </div>
               </PopoverContent>
             </Popover>
-            <div className="bg-zinc-800 rounded-full h-8 w-8 flex items-center justify-center">
-              <span className="text-sm font-medium text-white">JP</span>
-            </div>
           </div>
         </header>
 
