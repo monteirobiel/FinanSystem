@@ -27,7 +27,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-black`}
         >
           {/* Só mostrar o header com o UserButton se NÃO for uma rota pública de login/signup */}
           {!isPublicRoute ||

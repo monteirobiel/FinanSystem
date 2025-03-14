@@ -18,6 +18,19 @@ Copy.tab-hover:hover {
   background-color: rgb(24, 24, 27) !important; /* zinc-900 */
 }
 
+html,
+body {
+  height: 100%;
+  overflow-y: auto !important;
+  position: relative;
+}
+
+#__next,
+main {
+  height: auto;
+  min-height: 100%;
+}
+
 #__next,
 #root {
   height: 100vh;
