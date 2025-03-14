@@ -14,39 +14,33 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  plan      PlanType  @default(FREE)
-  transactions Transaction[]
+  id                 String  @id @default(cuid())
+  name               String
+  email              String  @unique
+  stripeCustomerId   String?
+  subscriptionId     String?
+  subscriptionStatus String?
+  planType           String?
+
+  Subscription Subscription[]
+
+  Payment Payment[]
 }
 
-model Transaction {
-  id          Int       @id @default(autoincrement())
-  amount      Float     
-  description String    
-  type        TransactionType 
-  date        DateTime  @default(now()) 
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
+model Subscription {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  status    String
+  planType  String
+  startDate DateTime
+  endDate   DateTime?
 }
 
-model Plan {
-  id          Int       @id @default(autoincrement())
-  name        String    // Nome do plano (ex: Free, Premium)
-  description String    
-  price       Float     
-  createdAt   DateTime  @default(now())
-}
-
-enum TransactionType {
-  INCOME
-  EXPENSE
-}
-
-enum PlanType {
-  FREE
-  PREMIUM
+model Payment {
+  id     String   @id @default(cuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id])
+  amount Decimal
+  date   DateTime
 }

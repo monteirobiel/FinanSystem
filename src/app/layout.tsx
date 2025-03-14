@@ -24,7 +24,7 @@ export default function RootLayout({
   const isPublicRoute = ["/", "/home", "/login", "/signup"].includes(pathname);
 
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignOutUrl="/login">
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-black`}
@@ -34,7 +34,7 @@ export default function RootLayout({
           (isPublicRoute && pathname !== "/login" && pathname !== "/signup") ? (
             <header className="flex justify-end items-center p-4 gap-4 h-16">
               <SignedIn>
-                <UserButton afterSignOutUrl="/login" />
+                <UserButton />
               </SignedIn>
               <SignedOut>
                 {!isPublicRoute && (

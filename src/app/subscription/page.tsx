@@ -1,5 +1,6 @@
 "use client";
 
+import { loadStripe } from "@stripe/stripe-js";
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +16,43 @@ import {
   CreditCard as CreditCardIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+);
+
+const redirectToCheckout = async (): Promise<void> => {
+  try {
+    // Fazer uma requisição para o seu backend para criar uma sessão de checkout
+    const response = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        priceId: "price_1R2dYbRheCWJ8RLxhDOmfAlc", // ID do preço do seu produto na Stripe
+      }),
+    });
+
+    const { sessionId } = await response.json();
+
+    const stripe = await stripePromise;
+    if (!stripe) {
+      throw new Error("Stripe não foi inicializado corretamente");
+    }
+
+    const { error } = await stripe.redirectToCheckout({ sessionId });
+
+    if (error) {
+      console.error("Erro ao redirecionar para o checkout:", error);
+    }
+  } catch (error) {
+    console.error(
+      "Erro ao criar a sessão de checkout:",
+      error instanceof Error ? error.message : "Erro desconhecido"
+    );
+  }
+};
 
 const PlanosPage = () => {
   const router = useRouter();
@@ -324,7 +362,10 @@ const PlanosPage = () => {
                   Suporte prioriatário 24 horas
                 </li>
               </ul>
-              <button className="w-80 mt-20 py-3 bg-purple-900 hover:bg-purple-900 text-white rounded-4xl font-semibold cursor-pointer">
+              <button
+                className="w-80 mt-20 py-3 bg-purple-900 hover:bg-purple-800 text-white rounded-4xl font-semibold cursor-pointer"
+                onClick={redirectToCheckout}
+              >
                 Alterar plano
               </button>
             </div>
