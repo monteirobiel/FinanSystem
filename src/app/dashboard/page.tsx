@@ -11,8 +11,6 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   Wallet,
-  Landmark,
-  CreditCard,
   Briefcase,
   CalendarIcon,
   ChevronLeft,
@@ -21,6 +19,7 @@ import {
   Home,
   Receipt,
   CreditCard as CreditCardIcon,
+  PlusIcon,
 } from "lucide-react";
 import {
   Popover,
@@ -35,6 +34,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 const Dashboard = () => {
   const pathname = usePathname();
@@ -43,6 +51,7 @@ const Dashboard = () => {
   const [selectedDay, setSelectedDay] = useState(14);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
 
   const [tempMonth, setTempMonth] = useState("Março");
   const [tempYear, setTempYear] = useState("2025");
@@ -200,7 +209,7 @@ const Dashboard = () => {
     return day === tempDay && month === tempMonth && year === tempYear;
   };
 
-  // Sidebar navigation items - Corrigido o caminho do Dashboard para /dashboard
+  // Sidebar navigation items
   const navItems = [
     { icon: <Home size={20} />, label: "Dashboard", path: "/dashboard" },
     { icon: <Receipt size={20} />, label: "Transações", path: "/transactions" },
@@ -232,7 +241,15 @@ const Dashboard = () => {
     }
   };
 
-  // Sidebar para mobile - Corrigido para usar o path correto
+  // Get current date for the transaction form
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = today.getDate().toString().padStart(2, "0");
+    const year = today.getFullYear();
+    return `${day} de ${months[today.getMonth()]} de ${year}`;
+  };
+
+  // Sidebar para mobile
   const MobileSidebar = () => (
     <Sheet>
       <SheetTrigger asChild>
@@ -254,7 +271,7 @@ const Dashboard = () => {
                 height={30}
               />
               <span className="ml-3 font-semibold text-lg text-white">
-                financesystem
+                finansystem
               </span>
             </div>
             <Button
@@ -301,6 +318,144 @@ const Dashboard = () => {
         </div>
       </SheetContent>
     </Sheet>
+  );
+
+  // Transaction Dialog Component
+  const TransactionDialog = () => (
+    <Dialog
+      open={isTransactionDialogOpen}
+      onOpenChange={setIsTransactionDialogOpen}
+    >
+      <DialogContent className="bg-zinc-950 border-zinc-800 text-white sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-white text-xl font-semibold">
+            Adicionar transação
+          </DialogTitle>
+          <p className="text-zinc-400 text-sm">Insira as informações abaixo</p>
+        </DialogHeader>
+
+        <div className="space-y-4 py-2">
+          <div className="space-y-2">
+            <label
+              htmlFor="title"
+              className="text-sm font-medium text-zinc-200"
+            >
+              Título
+            </label>
+            <Input
+              id="title"
+              placeholder="Digite o título da transação..."
+              className="bg-zinc-900 border-zinc-800 text-white"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="value"
+              className="text-sm font-medium text-zinc-200"
+            >
+              Valor
+            </label>
+            <Input
+              id="value"
+              placeholder="Digite o valor..."
+              className="bg-zinc-900 border-zinc-800 text-white"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="type" className="text-sm font-medium text-zinc-200">
+              Tipo da transação
+            </label>
+            <Select>
+              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectValue placeholder="Selecione o tipo da transação" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectItem value="receita">Receita</SelectItem>
+                <SelectItem value="despesa">Despesa</SelectItem>
+                <SelectItem value="investimento">Investimento</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="category"
+              className="text-sm font-medium text-zinc-200"
+            >
+              Selecione uma categoria
+            </label>
+            <Select>
+              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectValue placeholder="Outro" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectItem value="outro">Outro</SelectItem>
+                <SelectItem value="alimentacao">Alimentação</SelectItem>
+                <SelectItem value="transporte">Transporte</SelectItem>
+                <SelectItem value="lazer">Lazer</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button
+            variant="outline"
+            className="w-full bg-zinc-900 border-zinc-800 text-indigo-400 flex items-center justify-center gap-2"
+          >
+            <PlusIcon size={16} />
+            Adicionar nova Categoria
+          </Button>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="paymentMethod"
+              className="text-sm font-medium text-zinc-200"
+            >
+              Método de pagamento
+            </label>
+            <Select>
+              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectValue placeholder="Dinheiro" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectItem value="dinheiro">Dinheiro</SelectItem>
+                <SelectItem value="credito">Cartão de Crédito</SelectItem>
+                <SelectItem value="debito">Cartão de Débito</SelectItem>
+                <SelectItem value="pix">PIX</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="date" className="text-sm font-medium text-zinc-200">
+              Data da transação
+            </label>
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal bg-zinc-900 border-zinc-800 text-white"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {getCurrentDate()}
+            </Button>
+          </div>
+        </div>
+
+        <DialogFooter className="flex space-x-2 justify-end sm:justify-end">
+          <DialogClose asChild>
+            <Button
+              variant="outline"
+              className="bg-transparent text-white border-zinc-700"
+            >
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button className="bg-indigo-600 hover:bg-indigo-700">
+            Adicionar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 
   return (
@@ -526,7 +681,8 @@ const Dashboard = () => {
         <div className="flex-1 overflow-auto p-6 bg-black pt-5">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card className="p-4 border-none shadow-sm bg-zinc-900">
+            {/* Card 1: Saldo Total */}
+            <Card className="p-4 border-none shadow-sm bg-zinc-900 h-full">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-zinc-400">Saldo Total</span>
                 <div className="p-2 rounded-full bg-emerald-900/20 text-emerald-400">
@@ -534,14 +690,15 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex items-baseline justify-between">
-                <h3 className="text-2xl font-bold text-white">R$ 24.785,00</h3>
+                <h3 className="text-2xl font-bold text-white">R$ 0,00</h3>
                 <span className="text-xs px-2 py-1 rounded-full bg-emerald-900/20 text-emerald-400">
-                  +2.4%
+                  0%
                 </span>
               </div>
             </Card>
 
-            <Card className="p-4 border-none shadow-sm bg-zinc-900">
+            {/* Card 2: Receitas */}
+            <Card className="p-4 border-none shadow-sm bg-zinc-900 h-full">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-zinc-400">Receitas</span>
                 <div className="p-2 rounded-full bg-blue-900/20 text-blue-400">
@@ -549,14 +706,15 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex items-baseline justify-between">
-                <h3 className="text-2xl font-bold text-white">R$ 8.450,00</h3>
+                <h3 className="text-2xl font-bold text-white">R$ 0,00</h3>
                 <span className="text-xs px-2 py-1 rounded-full bg-emerald-900/20 text-emerald-400">
-                  +5.2%
+                  0%
                 </span>
               </div>
             </Card>
 
-            <Card className="p-4 border-none shadow-sm bg-zinc-900">
+            {/* Card 3: Despesas */}
+            <Card className="p-4 border-none shadow-sm bg-zinc-900 h-full">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-zinc-400">Despesas</span>
                 <div className="p-2 rounded-full bg-rose-900/20 text-rose-400">
@@ -564,14 +722,15 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex items-baseline justify-between">
-                <h3 className="text-2xl font-bold text-white">R$ 3.255,00</h3>
+                <h3 className="text-2xl font-bold text-white">R$ 0,00</h3>
                 <span className="text-xs px-2 py-1 rounded-full bg-rose-900/20 text-rose-400">
-                  -1.8%
+                  0%
                 </span>
               </div>
             </Card>
 
-            <Card className="p-4 border-none shadow-sm bg-zinc-900">
+            {/* Card 4: Investimentos */}
+            <Card className="p-4 border-none shadow-sm bg-zinc-900 h-full">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-zinc-400">Investimentos</span>
                 <div className="p-2 rounded-full bg-indigo-900/20 text-indigo-400">
@@ -579,13 +738,27 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex items-baseline justify-between">
-                <h3 className="text-2xl font-bold text-white">R$ 15.000,00</h3>
+                <h3 className="text-2xl font-bold text-white">R$ 0,00</h3>
                 <span className="text-xs px-2 py-1 rounded-full bg-emerald-900/20 text-emerald-400">
-                  +8.5%
+                  0%
                 </span>
               </div>
             </Card>
           </div>
+
+          {/* Botão de Nova Transação */}
+          <div className="mb-8">
+            <Button
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-full w-50 flex items-center justify-center gap-2"
+              onClick={() => setIsTransactionDialogOpen(true)}
+            >
+              <PlusIcon size={16} />
+              Adicionar Transação
+            </Button>
+          </div>
+
+          {/* Transaction Dialog */}
+          <TransactionDialog />
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="overview" className="mb-8">
@@ -630,28 +803,9 @@ const Dashboard = () => {
                   </Button>
                 </div>
 
-                {/* Chart Placeholder */}
+                {/* Empty Chart Placeholder */}
                 <div className="h-64 bg-zinc-800 rounded-lg mb-4 flex items-center justify-center">
-                  <div className="flex items-center space-x-6">
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-64 bg-zinc-700 rounded-lg relative">
-                        <div className="absolute bottom-0 w-full h-1/3 bg-blue-500 rounded-b-lg"></div>
-                      </div>
-                      <span className="mt-2 text-xs text-zinc-400">Jan</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-64 bg-zinc-700 rounded-lg relative">
-                        <div className="absolute bottom-0 w-full h-1/2 bg-blue-500 rounded-b-lg"></div>
-                      </div>
-                      <span className="mt-2 text-xs text-zinc-400">Fev</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-64 bg-zinc-700 rounded-lg relative">
-                        <div className="absolute bottom-0 w-full h-3/4 bg-blue-500 rounded-b-lg"></div>
-                      </div>
-                      <span className="mt-2 text-xs text-zinc-400">Mar</span>
-                    </div>
-                  </div>
+                  <p className="text-zinc-500">Sem dados de fluxo de caixa</p>
                 </div>
 
                 <div className="flex justify-between">
@@ -681,57 +835,15 @@ const Dashboard = () => {
                   </Button>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-full bg-blue-900/20 text-blue-400">
-                        <Landmark size={16} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm text-white">
-                          Salário
-                        </p>
-                        <p className="text-xs text-zinc-400">14 de março</p>
-                      </div>
-                    </div>
-                    <span className="text-emerald-400 font-medium">
-                      + R$ 5.400,00
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-full bg-rose-900/20 text-rose-400">
-                        <CreditCard size={16} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm text-white">
-                          Supermercado
-                        </p>
-                        <p className="text-xs text-zinc-400">12 de março</p>
-                      </div>
-                    </div>
-                    <span className="text-rose-400 font-medium">
-                      - R$ 235,80
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-full bg-rose-900/20 text-rose-400">
-                        <CreditCard size={16} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm text-white">
-                          Netflix
-                        </p>
-                        <p className="text-xs text-zinc-400">10 de março</p>
-                      </div>
-                    </div>
-                    <span className="text-rose-400 font-medium">
-                      - R$ 39,90
-                    </span>
-                  </div>
+                {/* Empty State for Transactions */}
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <Receipt size={40} className="text-zinc-700 mb-3" />
+                  <p className="text-zinc-500 mb-1">
+                    Nenhuma transação recente
+                  </p>
+                  <p className="text-zinc-600 text-sm">
+                    Adicione transações para visualizá-las aqui
+                  </p>
                 </div>
               </Card>
             </TabsContent>
@@ -741,21 +853,41 @@ const Dashboard = () => {
                 <h3 className="font-medium mb-4 text-white">
                   Histórico de Transações
                 </h3>
-                <p className="text-zinc-400">
-                  Conteúdo da aba de transações aparecerá aqui.
-                </p>
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <Receipt size={40} className="text-zinc-700 mb-3" />
+                  <p className="text-zinc-500 mb-1">
+                    Nenhuma transação encontrada
+                  </p>
+                  <p className="text-zinc-600 text-sm">
+                    As transações aparecerão aqui quando forem adicionadas
+                  </p>
+                </div>
               </Card>
             </TabsContent>
 
             <TabsContent value="analysis">
               <Card className="p-6 border-none shadow-sm bg-zinc-900">
                 <h3 className="font-medium mb-4 text-white">Análise</h3>
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <p className="text-zinc-500 mb-1">Sem dados para análise</p>
+                  <p className="text-zinc-600 text-sm">
+                    Adicione transações para gerar análises
+                  </p>
+                </div>
               </Card>
             </TabsContent>
 
             <TabsContent value="budgets">
               <Card className="p-6 border-none shadow-sm bg-zinc-900">
                 <h3 className="font-medium mb-4 text-white">Orçamentos</h3>
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <p className="text-zinc-500 mb-1">
+                    Nenhum orçamento configurado
+                  </p>
+                  <p className="text-zinc-600 text-sm">
+                    Configure orçamentos para acompanhar seus gastos
+                  </p>
+                </div>
               </Card>
             </TabsContent>
           </Tabs>
